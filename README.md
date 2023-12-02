@@ -20,7 +20,7 @@ We will have solved the problem once we have calculated the crime rates for spec
 [Chicago Crime Dataset](https://www.kaggle.com/datasets/chicago/chicago-crime/data) – Our plan is to utilize the most recent year of crime reported in this dataset (2017).
 
 #### Tools
-- C++
+- Python
 - GitHub
 - Kaggle
 
