@@ -28,3 +28,10 @@ class HashTable:
             if key == k:
                 return v
         return None
+
+    def keys(self):
+        all_keys = []
+        for bucket in self.table:
+            for key, _ in bucket:
+                all_keys.append(key)
+        return all_keys
