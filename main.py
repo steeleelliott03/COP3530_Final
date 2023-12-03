@@ -3,6 +3,7 @@ from tkinter import ttk, messagebox
 from data import fetch_data
 from HashTable import HashTable
 from Btree import BTree
+import time
 import pandas as pd
 class CrimeDataApp:
     
@@ -16,6 +17,7 @@ class CrimeDataApp:
         self.b_tree = BTree()
         # Add a variable to track the selected search method
         self.search_method_var = tk.StringVar(value="hash_table")
+        self.sort_order = {}
         # Create main menu buttons
         self.create_main_menu()
 
@@ -72,22 +74,37 @@ class CrimeDataApp:
             self.search_crime_type_b_tree(crime_type)
     
     def search_crime_type_hash_table(self, crime_type):
+        start_time_ns = time.perf_counter_ns()  # Start timing in nanoseconds
         results = []
         for bucket in self.hash_table.table:
             for key, record in bucket:
                 if record['primary_type'].lower() == crime_type.lower():
                     results.append(record)
+        end_time_ns = time.perf_counter_ns()  # End timing in nanoseconds
+        search_duration_ns = end_time_ns - start_time_ns  # Calculate duration in nanoseconds
+
+        print(f"Hash table search time: {search_duration_ns} ns")
 
         if results:
-            # Convert the list of dictionaries to a DataFrame
             results_df = pd.DataFrame(results)
             self.display_data(results_df)
         else:
             messagebox.showinfo("No results", "No matching records found.")
 
     def search_crime_type_b_tree(self, crime_type):
+        start_time_ns = time.perf_counter_ns()  # Start timing in nanoseconds
         # Implement B-tree search logic here
-        pass
+        # Make sure to populate the 'results' list with the search results
+        end_time_ns = time.perf_counter_ns()  # End timing in nanoseconds
+        search_duration_ns = end_time_ns - start_time_ns  # Calculate duration in nanoseconds
+
+        print(f"B-tree search time: {search_duration_ns} ns")
+
+        if results:
+            results_df = pd.DataFrame(results)
+            self.display_data(results_df)
+        else:
+            messagebox.showinfo("No results", "No matching records found.")
 
         
     def display_data(self, data):
@@ -102,8 +119,8 @@ class CrimeDataApp:
 
 
         for col in tree["columns"]:
-            tree.column(col, width=100)
-            tree.heading(col, text=col.title())
+            self.sort_order[col] = True  # Initialize sorting order as ascending for each column
+            tree.heading(col, text=col.title(), command=lambda _col=col: self.sort_column(tree, _col))
             
         tree.column("date", width=150)  # Adjust width as needed
         tree.heading("date", text="Date")
@@ -121,6 +138,26 @@ class CrimeDataApp:
         scrollbar = ttk.Scrollbar(tree_frame, orient='vertical', command=tree.yview)
         tree.configure(yscroll=scrollbar.set)
         scrollbar.pack(side='right', fill='y')
+    
+    def sort_column(self, tree, col):
+        reverse = self.sort_order[col]
+        data_list = [(tree.set(k, col), k) for k in tree.get_children('')]
+        data_list.sort(reverse=reverse)
+
+        # Rearrange items in sorted positions
+        for index, (val, k) in enumerate(data_list):
+            tree.move(k, '', index)
+
+        # Update column header with sorting arrow
+        arrow = '↓' if reverse else '↑'
+        for c in tree["columns"]:
+            if c == col:
+                tree.heading(c, text=f'{c.title()} {arrow}', command=lambda _col=c: self.sort_column(tree, _col))
+            else:
+                tree.heading(c, text=c.title(), command=lambda _col=c: self.sort_column(tree, _col))
+
+        # Reverse the sort order for the next time
+        self.sort_order[col] = not reverse
 
 
 
