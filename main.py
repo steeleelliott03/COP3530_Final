@@ -39,9 +39,9 @@ class CrimeDataApp:
     def fetch_and_process_data(self):
         data = fetch_data()
         for index, row in data.iterrows():
-            key = row['district']  # Using 'district' as a key
-            self.hash_table.insert(key, row.to_dict())
-            self.b_tree.insert(key, row.to_dict())
+            key = row['primary_type']  # Using 'district' as a key
+            self.hash_table.insert(key.lower(), row.to_dict())
+            self.b_tree.insert(key.lower(), row.to_dict())
 
 
 
@@ -92,19 +92,22 @@ class CrimeDataApp:
             messagebox.showinfo("No results", "No matching records found.")
 
     def search_crime_type_b_tree(self, crime_type):
-        start_time_ns = time.perf_counter_ns()  # Start timing in nanoseconds
-        # Implement B-tree search logic here
-        # Make sure to populate the 'results' list with the search results
-        end_time_ns = time.perf_counter_ns()  # End timing in nanoseconds
-        search_duration_ns = end_time_ns - start_time_ns  # Calculate duration in nanoseconds
-
+        start_time_ns = time.perf_counter_ns()
+        condition = lambda item: item['primary_type'].lower() == crime_type.lower()
+        results = self.b_tree.search(condition)
+        end_time_ns = time.perf_counter_ns()
+        search_duration_ns = end_time_ns - start_time_ns
         print(f"B-tree search time: {search_duration_ns} ns")
+
+        # Debugging output
+        print(f"Number of results found: {len(results)}")
 
         if results:
             results_df = pd.DataFrame(results)
             self.display_data(results_df)
         else:
             messagebox.showinfo("No results", "No matching records found.")
+
 
         
     def display_data(self, data):
