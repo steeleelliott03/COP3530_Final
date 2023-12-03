@@ -140,6 +140,8 @@ class CrimeDataApp:
         scrollbar.pack(side='right', fill='y')
     
     def sort_column(self, tree, col):
+        start_time = time.perf_counter_ns()  # Start timing in nanoseconds
+
         reverse = self.sort_order[col]
         data_list = [(tree.set(k, col), k) for k in tree.get_children('')]
         data_list.sort(reverse=reverse)
@@ -158,6 +160,11 @@ class CrimeDataApp:
 
         # Reverse the sort order for the next time
         self.sort_order[col] = not reverse
+
+        end_time = time.perf_counter_ns()  # End timing in nanoseconds
+        time_diff_ns = end_time - start_time
+        print(f"Sorting time for column '{col}': {time_diff_ns} nanoseconds")  # Displaying the time taken in nanoseconds
+
 
 
 
