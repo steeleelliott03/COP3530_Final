@@ -84,6 +84,7 @@ class CrimeDataApp:
         search_duration_ns = end_time_ns - start_time_ns  # Calculate duration in nanoseconds
 
         print(f"Hash table search time: {search_duration_ns} ns")
+        print(f"Number of results found: {len(results)}")
 
         if results:
             results_df = pd.DataFrame(results)
@@ -92,14 +93,17 @@ class CrimeDataApp:
             messagebox.showinfo("No results", "No matching records found.")
 
     def search_crime_type_b_tree(self, crime_type):
+        crime_type_key = crime_type.lower()
+        print(f"Searching B-tree with key: {crime_type_key}")
         start_time_ns = time.perf_counter_ns()
-        condition = lambda item: item['primary_type'].lower() == crime_type.lower()
-        results = self.b_tree.search(condition)
+        
+        # Directly use the crime type as the key for searching in lowercase.
+        results = self.b_tree.search(crime_type.lower())
+
         end_time_ns = time.perf_counter_ns()
         search_duration_ns = end_time_ns - start_time_ns
         print(f"B-tree search time: {search_duration_ns} ns")
 
-        # Debugging output
         print(f"Number of results found: {len(results)}")
 
         if results:
@@ -107,6 +111,7 @@ class CrimeDataApp:
             self.display_data(results_df)
         else:
             messagebox.showinfo("No results", "No matching records found.")
+
 
 
         
