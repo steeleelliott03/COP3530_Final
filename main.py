@@ -26,15 +26,34 @@ class CrimeDataApp:
         main_frame = tk.Frame(self.root)
         main_frame.pack(padx=10, pady=10)
 
+        # Heading for choosing the data structure
+        data_structure_label = tk.Label(main_frame, text="Choose the data structure to search by")
+        data_structure_label.pack()
+
         # Add radio buttons for selecting the search method
         radio1 = tk.Radiobutton(main_frame, text="Hash Table", variable=self.search_method_var, value="hash_table")
         radio1.pack()
         radio2 = tk.Radiobutton(main_frame, text="B-Tree", variable=self.search_method_var, value="b_tree")
         radio2.pack()
 
-        btn_crime_type = tk.Button(main_frame, text="Search by Crime Type", command=self.open_crime_type_search)
-        btn_crime_type.pack(fill='x', padx=5, pady=5)
+        crime_types = self.fetch_crime_types()
 
+        #Drop down box for crime types
+        crime_type_label = tk.Label(main_frame, text="Select Crime Type:")
+        crime_type_label.pack()
+
+        self.selected_crime_type = tk.StringVar()
+        crime_type_dropdown = ttk.Combobox(main_frame, textvariable=self.selected_crime_type, values=crime_types)
+        crime_type_dropdown.pack()
+
+        search_button = tk.Button(main_frame, text="Search", command=self.search_selected_crime_type)
+        search_button.pack(fill='x', padx=5, pady=5)
+
+    def fetch_crime_types(self):
+        data = fetch_data()  # Fetch data
+        crime_types = data['primary_type'].unique().tolist()  # Extract unique crime types
+        crime_types.sort()
+        return crime_types 
 
     def fetch_and_process_data(self):
         data = fetch_data()
@@ -65,6 +84,10 @@ class CrimeDataApp:
         search_button = tk.Button(frame, text="Search", command=lambda: self.search_crime_type(entry.get()))
         search_button.pack(pady=5)
 
+    def search_selected_crime_type(self):
+        selected_type = self.selected_crime_type.get()
+        if selected_type:
+            self.search_crime_type(selected_type)
 
     def search_crime_type(self, crime_type):
         search_method = self.search_method_var.get()
@@ -150,9 +173,15 @@ class CrimeDataApp:
     def sort_column(self, tree, col):
         start_time = time.perf_counter_ns()  # Start timing in nanoseconds
 
-        reverse = self.sort_order[col]
+        reverse = self.sort_order.get(col, False)
         data_list = [(tree.set(k, col), k) for k in tree.get_children('')]
-        data_list.sort(reverse=reverse)
+
+        #Sorting for districts
+        if col == 'district':
+            data_list.sort(key=lambda x: int(x[0]), reverse=reverse)
+
+        else:
+            data_list.sort(reverse=reverse)
 
         # Rearrange items in sorted positions
         for index, (val, k) in enumerate(data_list):
