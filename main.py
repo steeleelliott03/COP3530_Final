@@ -14,7 +14,8 @@ class CrimeDataApp:
         # Initialize hash table and B-tree
         self.hash_table = HashTable()
         self.b_tree = BTree()
-
+        # Add a variable to track the selected search method
+        self.search_method_var = tk.StringVar(value="hash_table")
         # Create main menu buttons
         self.create_main_menu()
 
@@ -23,10 +24,14 @@ class CrimeDataApp:
         main_frame = tk.Frame(self.root)
         main_frame.pack(padx=10, pady=10)
 
+        # Add radio buttons for selecting the search method
+        radio1 = tk.Radiobutton(main_frame, text="Hash Table", variable=self.search_method_var, value="hash_table")
+        radio1.pack()
+        radio2 = tk.Radiobutton(main_frame, text="B-Tree", variable=self.search_method_var, value="b_tree")
+        radio2.pack()
+
         btn_crime_type = tk.Button(main_frame, text="Search by Crime Type", command=self.open_crime_type_search)
         btn_crime_type.pack(fill='x', padx=5, pady=5)
-
-        # Add other buttons similarly
 
 
     def fetch_and_process_data(self):
@@ -40,11 +45,6 @@ class CrimeDataApp:
 
 
     # Define other methods for sub-menus, data display, etc.
-    def create_main_menu(self):
-        btn_crime_type = tk.Button(self.root, text="Search by Crime Type", command=self.open_crime_type_search)
-        btn_crime_type.pack(fill='x')
-
-        # Repeat for other buttons
 
     def open_crime_type_search(self):
         crime_type_window = tk.Toplevel(self.root)
@@ -65,6 +65,13 @@ class CrimeDataApp:
 
 
     def search_crime_type(self, crime_type):
+        search_method = self.search_method_var.get()
+        if search_method == "hash_table":
+            self.search_crime_type_hash_table(crime_type)
+        elif search_method == "b_tree":
+            self.search_crime_type_b_tree(crime_type)
+    
+    def search_crime_type_hash_table(self, crime_type):
         results = []
         for bucket in self.hash_table.table:
             for key, record in bucket:
@@ -78,6 +85,10 @@ class CrimeDataApp:
         else:
             messagebox.showinfo("No results", "No matching records found.")
 
+    def search_crime_type_b_tree(self, crime_type):
+        # Implement B-tree search logic here
+        pass
+
         
     def display_data(self, data):
         display_window = tk.Toplevel(self.root)
@@ -87,15 +98,23 @@ class CrimeDataApp:
         tree_frame = tk.Frame(display_window)
         tree_frame.pack(fill='both', expand=True)
 
-        tree = ttk.Treeview(tree_frame, columns=("district", "primary_type", "description"), show='headings')
+        tree = ttk.Treeview(tree_frame, columns=("date", "district", "primary_type", "description"), show='headings')
+
 
         for col in tree["columns"]:
             tree.column(col, width=100)
             tree.heading(col, text=col.title())
+            
+        tree.column("date", width=150)  # Adjust width as needed
+        tree.heading("date", text="Date")
+
+
 
         # Correct way to iterate over rows in a DataFrame
         for index, row in data.iterrows():
-            tree.insert("", "end", values=(row["district"], row["primary_type"], row["description"]))
+            # Convert date to string if necessary
+            date_str = row["date"].strftime("%Y-%m-%d %H:%M:%S") if pd.notnull(row["date"]) else ""
+            tree.insert("", "end", values=(date_str, row["district"], row["primary_type"], row["description"]))
 
         tree.pack(side='left', fill='both', expand=True)
 
