@@ -9,29 +9,22 @@ class HashTable:
 
     def insert(self, key, value):
         hash_key = self._hash(key)
-        key_exists = False
         bucket = self.table[hash_key]
-        for i, kv in enumerate(bucket):
-            k, v = kv
-            if key == k:
-                key_exists = True
-                break
-        if key_exists:
-            bucket[i] = ((key, value))
-        else:
-            bucket.append((key, value))
-
+        # Always append the new value
+        bucket.append((key, value))
+            
     def get(self, key):
         hash_key = self._hash(key)
         bucket = self.table[hash_key]
-        for k, v in bucket:
-            if key == k:
-                return v
+        for item in bucket:
+            if isinstance(item, dict) and item.get('district') == key:
+                return item
         return None
-
+    
     def keys(self):
-        all_keys = []
+        all_keys = set()
         for bucket in self.table:
-            for key, _ in bucket:
-                all_keys.append(key)
-        return all_keys
+            for item in bucket:
+                # Assuming each 'item' is a dictionary and 'district' is the key
+                all_keys.add(item['district'])
+        return list(all_keys)

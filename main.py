@@ -3,7 +3,7 @@ from tkinter import ttk, messagebox
 from data import fetch_data
 from HashTable import HashTable
 from Btree import BTree
-
+import pandas as pd
 class CrimeDataApp:
     
     def __init__(self, root):
@@ -32,9 +32,11 @@ class CrimeDataApp:
     def fetch_and_process_data(self):
         data = fetch_data()
         for index, row in data.iterrows():
-            key = row['district']  # Example key
-            self.hash_table.insert(key, row.to_dict())  # Convert row to dictionary
+            key = row['district']  # Using 'district' as a key
+            self.hash_table.insert(key, row.to_dict())
             self.b_tree.insert(key, row.to_dict())
+
+
 
 
     # Define other methods for sub-menus, data display, etc.
@@ -63,44 +65,44 @@ class CrimeDataApp:
 
 
     def search_crime_type(self, crime_type):
-        # Example: Searching the hash table for a specific crime type
         results = []
-        for key in self.hash_table.keys():
-            if self.hash_table.get(key)['primary_type'] == crime_type:
-                results.append(self.hash_table.get(key))
+        for bucket in self.hash_table.table:
+            for key, record in bucket:
+                if record['primary_type'].lower() == crime_type.lower():
+                    results.append(record)
+
         if results:
-            self.display_data(results)
+            # Convert the list of dictionaries to a DataFrame
+            results_df = pd.DataFrame(results)
+            self.display_data(results_df)
         else:
             messagebox.showinfo("No results", "No matching records found.")
 
-    
+        
     def display_data(self, data):
         display_window = tk.Toplevel(self.root)
         display_window.title("Search Results")
-        display_window.geometry("800x600")  # Adjust size as needed
+        display_window.geometry("800x600")
 
         tree_frame = tk.Frame(display_window)
         tree_frame.pack(fill='both', expand=True)
 
         tree = ttk.Treeview(tree_frame, columns=("district", "primary_type", "description"), show='headings')
-        
-        # Define the columns
+
         for col in tree["columns"]:
             tree.column(col, width=100)
             tree.heading(col, text=col.title())
 
-        # Insert data into the treeview
+        # Correct way to iterate over rows in a DataFrame
         for index, row in data.iterrows():
             tree.insert("", "end", values=(row["district"], row["primary_type"], row["description"]))
 
         tree.pack(side='left', fill='both', expand=True)
 
-        # Add a scrollbar
         scrollbar = ttk.Scrollbar(tree_frame, orient='vertical', command=tree.yview)
         tree.configure(yscroll=scrollbar.set)
         scrollbar.pack(side='right', fill='y')
-        for item in data:
-            tree.insert("", "end", values=(item["district"], item["primary_type"], item["description"]))
+
 
 
 
