@@ -23,39 +23,49 @@ class CrimeDataApp:
 
 
     def create_main_menu(self):
-        main_frame = tk.Frame(self.root)
-        main_frame.pack(padx=10, pady=10)
+        main_frame = tk.Frame(self.root, bg='lightgray')
+        main_frame.pack(padx=20, pady=20, fill='both', expand=True)
+        # Load the image file
+        logo_image = tk.PhotoImage(file='icons/detective.png')  # Replace with your image file path
+        logo_label = tk.Label(main_frame, image=logo_image, bg='lightgray')
+        logo_label.image = logo_image  # Keep a reference to the image
+        logo_label.grid(row=8, column=0, columnspan=2, pady=(0, 20)) 
+        # Styling
+        label_font = ("Verdana", 10, "bold")
+        entry_font = ("Verdana", 10)
 
         # Heading for choosing the data structure
-        data_structure_label = tk.Label(main_frame, text="Choose the data structure to search by")
-        data_structure_label.pack()
+        data_structure_label = tk.Label(main_frame, text="Choose the data structure to search by", font=label_font, bg='lightgray')
+        data_structure_label.grid(row=0, column=0, columnspan=2, pady=(0, 10), sticky="ew")
 
         # Add radio buttons for selecting the search method
-        radio1 = tk.Radiobutton(main_frame, text="Hash Table", variable=self.search_method_var, value="hash_table")
-        radio1.pack()
-        radio2 = tk.Radiobutton(main_frame, text="B-Tree", variable=self.search_method_var, value="b_tree")
-        radio2.pack()
+        radio1 = ttk.Radiobutton(main_frame, text="Hash Table", variable=self.search_method_var, value="hash_table", style='TRadiobutton')
+        radio1.grid(row=1, column=0, padx=(10, 10), pady=(5, 5), sticky="ew")
+        radio2 = ttk.Radiobutton(main_frame, text="B-Tree", variable=self.search_method_var, value="b_tree", style='TRadiobutton')
+        radio2.grid(row=1, column=1, padx=(10, 10), pady=(5, 5), sticky="ew")
 
+        # Drop down box for crime types
         crime_types = self.fetch_crime_types()
-
-        #Drop down box for crime types
-        crime_type_label = tk.Label(main_frame, text="Select Crime Type:")
-        crime_type_label.pack()
-
+        crime_type_label = tk.Label(main_frame, text="Select Crime Type:", font=label_font, bg='lightgray')
+        crime_type_label.grid(row=2, column=0, columnspan=2, pady=(10, 0), sticky="ew")
         self.selected_crime_type = tk.StringVar()
-        crime_type_dropdown = ttk.Combobox(main_frame, textvariable=self.selected_crime_type, values=crime_types)
-        crime_type_dropdown.pack()
-        
-        # Add a label and entry for date input
-        date_label = tk.Label(main_frame, text="Enter Date (YYYY-MM-DD):")
-        date_label.pack()
+        crime_type_dropdown = ttk.Combobox(main_frame, textvariable=self.selected_crime_type, values=crime_types, state='readonly')
+        crime_type_dropdown.grid(row=3, column=0, columnspan=2, padx=(10, 10), pady=(5, 5), sticky="ew")
 
-        self.date_entry = tk.Entry(main_frame)
-        self.date_entry.pack()
+        # Date input
+        date_label = tk.Label(main_frame, text="Enter Date (YYYY-MM-DD):", font=label_font, bg='lightgray')
+        date_label.grid(row=4, column=0, columnspan=2, pady=(10, 0), sticky="ew")
+        self.date_entry = ttk.Entry(main_frame, font=entry_font)
+        self.date_entry.grid(row=5, column=0, columnspan=2, padx=(10, 10), pady=(5, 5), sticky="ew")
 
+        # Search button
+        search_button = ttk.Button(main_frame, text="Search", command=self.search_selected_crime_type)
+        search_button.grid(row=6, column=0, columnspan=2, padx=(10, 10), pady=(10, 0), sticky="ew")
 
-        search_button = tk.Button(main_frame, text="Search", command=self.search_selected_crime_type)
-        search_button.pack(fill='x', padx=5, pady=5)
+        # Configure the grid to expand the widgets with the window
+        main_frame.grid_rowconfigure(7, weight=1)
+        for i in range(2):
+            main_frame.grid_columnconfigure(i, weight=1)
 
     def fetch_crime_types(self):
         data = fetch_data()  # Fetch data
@@ -189,9 +199,10 @@ class CrimeDataApp:
 
         tree_frame = tk.Frame(display_window)
         tree_frame.pack(fill='both', expand=True)
-
-        tree = ttk.Treeview(tree_frame, columns=("date", "district", "primary_type", "description"), show='headings')
-
+        tree_style = ttk.Style()
+        tree_style.configure("Treeview", font=('Helvetica', 10), rowheight=25)
+        tree_style.configure("Treeview.Heading", font=('Helvetica', 10, 'bold'))
+        tree = ttk.Treeview(tree_frame, columns=("date", "district", "primary_type", "description"), show='headings', style="Treeview")
 
         for col in tree["columns"]:
             self.sort_order[col] = True  # Initialize sorting order as ascending for each column

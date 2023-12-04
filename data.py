@@ -16,7 +16,7 @@ def fetch_data():
     SELECT case_number, date, primary_type, description, location_description, arrest, domestic, CAST(district AS INT64) AS district, year
     FROM `bigquery-public-data.chicago_crime.crime`
     WHERE year BETWEEN 2015 AND 2023
-    LIMIT 100000
+    LIMIT 10000
     """
 
     query_job = client.query(query)
