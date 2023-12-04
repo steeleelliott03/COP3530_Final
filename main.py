@@ -76,7 +76,7 @@ class CrimeDataApp:
         #yeah bruh
         # Print the duration for each data structure
         print(f"Hash Table insertion time: {duration_ht} ns")
-        print(f"B-Tree insertion time: {duration_bt} ns")
+        print(f"B-Tree insertion time: {duration_bt} ns\n")
 
 
 
@@ -124,7 +124,7 @@ class CrimeDataApp:
         search_duration_ns = end_time_ns - start_time_ns  # Calculate duration in nanoseconds
 
         print(f"Hash table search time: {search_duration_ns} ns")
-        print(f"Number of results found: {len(results)}")
+        print(f"Number of results found: {len(results)}\n")
 
         if results:
             results_df = pd.DataFrame(results)
@@ -144,7 +144,7 @@ class CrimeDataApp:
         search_duration_ns = end_time_ns - start_time_ns
         print(f"B-tree search time: {search_duration_ns} ns")
 
-        print(f"Number of results found: {len(results)}")
+        print(f"Number of results found: {len(results)}\n")
 
         if results:
             results_df = pd.DataFrame(results)
@@ -217,7 +217,7 @@ class CrimeDataApp:
 
         end_time = time.perf_counter_ns()  # End timing in nanoseconds
         time_diff_ns = end_time - start_time
-        print(f"Sorting time for column '{col}': {time_diff_ns} nanoseconds")  # Displaying the time taken in nanoseconds
+        print(f"Sorting time for column '{col}': {time_diff_ns} nanoseconds\n")  # Displaying the time taken in nanoseconds
 
 
 
