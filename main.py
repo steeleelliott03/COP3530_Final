@@ -9,7 +9,7 @@ class CrimeDataApp:
     
     def __init__(self, root):
         self.root = root
-        self.root.title("Crime Data Analysis")
+        self.root.title("Chicago Crime Search Analysis")
         self.root.geometry("600x400")  # Set the size of the window (width x height)
 
         # Initialize hash table and B-tree
@@ -23,37 +23,38 @@ class CrimeDataApp:
 
 
     def create_main_menu(self):
-        main_frame = tk.Frame(self.root, bg='lightgray')
+        style = ttk.Style()
+        style.configure('W.TLabel', font=("Lato", 10, "bold"), background='lightblue')
+        style.configure('W.TRadiobutton', font=("Lato", 10, "bold"))
+        style.configure('W.TButton', font=("Lato", 10, "bold"))
+        style.configure('W.TEntry', font=("Lato", 10))
+        
+        main_frame = tk.Frame(self.root, bg='lightblue')
         main_frame.pack(padx=20, pady=20, fill='both', expand=True)
-        # Load the image file
-        logo_image = tk.PhotoImage(file='icons/detective.png')  # Replace with your image file path
-        logo_label = tk.Label(main_frame, image=logo_image, bg='lightgray')
-        logo_label.image = logo_image  # Keep a reference to the image
-        logo_label.grid(row=8, column=0, columnspan=2, pady=(0, 20)) 
+        
         # Styling
-        label_font = ("Verdana", 10, "bold")
-        entry_font = ("Verdana", 10)
+        label_font = ("Lato", 10, "bold")
+        entry_font = ("Lato", 10)
 
         # Heading for choosing the data structure
-        data_structure_label = tk.Label(main_frame, text="Choose the data structure to search by", font=label_font, bg='lightgray')
+        data_structure_label = ttk.Label(main_frame, text="Choose the data structure to search by", style='W.TLabel')
         data_structure_label.grid(row=0, column=0, columnspan=2, pady=(0, 10), sticky="ew")
 
         # Add radio buttons for selecting the search method
-        radio1 = ttk.Radiobutton(main_frame, text="Hash Table", variable=self.search_method_var, value="hash_table", style='TRadiobutton')
+        radio1 = ttk.Radiobutton(main_frame, text="Hash Table", variable=self.search_method_var, value="hash_table", style='W.TRadiobutton')
         radio1.grid(row=1, column=0, padx=(10, 10), pady=(5, 5), sticky="ew")
-        radio2 = ttk.Radiobutton(main_frame, text="B-Tree", variable=self.search_method_var, value="b_tree", style='TRadiobutton')
+        radio2 = ttk.Radiobutton(main_frame, text="B-Tree", variable=self.search_method_var, value="b_tree", style='W.TRadiobutton')
         radio2.grid(row=1, column=1, padx=(10, 10), pady=(5, 5), sticky="ew")
-
         # Drop down box for crime types
         crime_types = self.fetch_crime_types()
-        crime_type_label = tk.Label(main_frame, text="Select Crime Type:", font=label_font, bg='lightgray')
+        crime_type_label = tk.Label(main_frame, text="Select Crime Type:", font=label_font, bg='lightblue')
         crime_type_label.grid(row=2, column=0, columnspan=2, pady=(10, 0), sticky="ew")
         self.selected_crime_type = tk.StringVar()
         crime_type_dropdown = ttk.Combobox(main_frame, textvariable=self.selected_crime_type, values=crime_types, state='readonly')
         crime_type_dropdown.grid(row=3, column=0, columnspan=2, padx=(10, 10), pady=(5, 5), sticky="ew")
 
         # Date input
-        date_label = tk.Label(main_frame, text="Enter Date (YYYY-MM-DD):", font=label_font, bg='lightgray')
+        date_label = tk.Label(main_frame, text="Enter Date (YYYY-MM-DD):", font=label_font, bg='lightblue')
         date_label.grid(row=4, column=0, columnspan=2, pady=(10, 0), sticky="ew")
         self.date_entry = ttk.Entry(main_frame, font=entry_font)
         self.date_entry.grid(row=5, column=0, columnspan=2, padx=(10, 10), pady=(5, 5), sticky="ew")
@@ -62,10 +63,15 @@ class CrimeDataApp:
         search_button = ttk.Button(main_frame, text="Search", command=self.search_selected_crime_type)
         search_button.grid(row=6, column=0, columnspan=2, padx=(10, 10), pady=(10, 0), sticky="ew")
 
-        # Configure the grid to expand the widgets with the window
         main_frame.grid_rowconfigure(7, weight=1)
         for i in range(2):
             main_frame.grid_columnconfigure(i, weight=1)
+            
+        # Load the image file
+        logo_image = tk.PhotoImage(file='icons/detective.png')
+        logo_label = tk.Label(main_frame, image=logo_image, bg='lightblue')
+        logo_label.image = logo_image  # Keep a reference to the image
+        logo_label.grid(row=8, column=0, columnspan=2, pady=(0, 20))
 
     def fetch_crime_types(self):
         data = fetch_data()  # Fetch data
