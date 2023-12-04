@@ -45,6 +45,14 @@ class CrimeDataApp:
         self.selected_crime_type = tk.StringVar()
         crime_type_dropdown = ttk.Combobox(main_frame, textvariable=self.selected_crime_type, values=crime_types)
         crime_type_dropdown.pack()
+        
+        # Add a label and entry for date input
+        date_label = tk.Label(main_frame, text="Enter Date (YYYY-MM-DD):")
+        date_label.pack()
+
+        self.date_entry = tk.Entry(main_frame)
+        self.date_entry.pack()
+
 
         search_button = tk.Button(main_frame, text="Search", command=self.search_selected_crime_type)
         search_button.pack(fill='x', padx=5, pady=5)
@@ -114,14 +122,24 @@ class CrimeDataApp:
             self.search_crime_type_b_tree(crime_type)
     
     def search_crime_type_hash_table(self, crime_type):
-        start_time_ns = time.perf_counter_ns()  # Start timing in nanoseconds
+        selected_date = self.date_entry.get()
+        selected_date_obj = None
+        if selected_date:  # Check if a date is entered
+            try:
+                selected_date_obj = pd.to_datetime(selected_date).date()
+            except ValueError:
+                messagebox.showerror("Invalid Date", "Enter the date in YYYY-MM-DD format or leave blank")
+                return
+
+        start_time_ns = time.perf_counter_ns()
         results = []
         for bucket in self.hash_table.table:
             for key, record in bucket:
-                if record['primary_type'].lower() == crime_type.lower():
+                record_date = pd.to_datetime(record['date']).date() if 'date' in record else None
+                if record['primary_type'].lower() == crime_type.lower() and (not selected_date_obj or record_date == selected_date_obj):
                     results.append(record)
-        end_time_ns = time.perf_counter_ns()  # End timing in nanoseconds
-        search_duration_ns = end_time_ns - start_time_ns  # Calculate duration in nanoseconds
+        end_time_ns = time.perf_counter_ns()
+        search_duration_ns = end_time_ns - start_time_ns
 
         print(f"Hash table search time: {search_duration_ns} ns")
         print(f"Number of results found: {len(results)}\n")
@@ -132,18 +150,28 @@ class CrimeDataApp:
         else:
             messagebox.showinfo("No results", "No matching records found.")
 
-    def search_crime_type_b_tree(self, crime_type):
-        crime_type_key = crime_type.lower()
-        print(f"Searching B-tree with key: {crime_type_key}")
-        start_time_ns = time.perf_counter_ns()
-        
-        # Directly use the crime type as the key for searching in lowercase.
-        results = self.b_tree.search(crime_type.lower())
 
+    def search_crime_type_b_tree(self, crime_type):
+        selected_date = self.date_entry.get()
+        selected_date_obj = None
+        if selected_date:  # Check if a date is entered
+            try:
+                selected_date_obj = pd.to_datetime(selected_date).date()
+            except ValueError:
+                messagebox.showerror("Invalid Date", "Enter the date in YYYY-MM-DD format or leave blank")
+                return
+
+        start_time_ns = time.perf_counter_ns()
+        results = []
+        all_results = self.b_tree.search(crime_type.lower())  # Assuming this returns a list of records
+        for record in all_results:
+            record_date = pd.to_datetime(record['date']).date() if 'date' in record else None
+            if not selected_date_obj or record_date == selected_date_obj:
+                results.append(record)
         end_time_ns = time.perf_counter_ns()
         search_duration_ns = end_time_ns - start_time_ns
-        print(f"B-tree search time: {search_duration_ns} ns")
 
+        print(f"B-tree search time: {search_duration_ns} ns")
         print(f"Number of results found: {len(results)}\n")
 
         if results:
@@ -153,8 +181,7 @@ class CrimeDataApp:
             messagebox.showinfo("No results", "No matching records found.")
 
 
-
-        
+            
     def display_data(self, data):
         display_window = tk.Toplevel(self.root)
         display_window.title("Search Results")
