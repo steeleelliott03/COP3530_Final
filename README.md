@@ -1,62 +1,53 @@
-# Group 94
-## Members
+# Group 94 - Final Project Repository
+
+## Team Members
 - Austin Markus
 - Steele Elliott
 - Nadzumie Flores
 
-## Final Project Proposal
-### Keep Your Eye on the Crime
+## Links
+- [GitHub Repository](https://github.com/steeleelliott03/COP3530_Final)
+- Link to Video: _[Video link to be added]_
 
-#### Problem
-We want to determine which Chicago districts are experiencing the highest crime rates, which types of crimes are occurring in these areas, and in which months these crimes occur the most.
+## Final Project Proposal: Keep Your Eye on the Crime
 
-#### Motivation
-If we can determine which districts have the highest rates of certain types of crimes at certain times, then it will provide insight into addressing crime prevention in specific areas. This will allow us to allocate our prevention efforts more efficiently to areas with heightened crime.
+### Problem Statement
+Our goal is to identify Chicago districts with high crime rates, analyze prevalent crime types in these areas, and determine the months with the highest crime incidence.
 
-#### Features
-We will have solved the problem once we have calculated the crime rates for specific districts and dates and determined which areas are most susceptible to certain types of crimes.
+### Motivation
+Understanding crime patterns is crucial for developing effective prevention strategies. By focusing on specific districts and time frames, we can efficiently allocate resources to combat heightened crime rates.
 
-#### Data
-[Chicago Crime Dataset](https://www.kaggle.com/datasets/chicago/chicago-crime/data) – Our plan is to utilize the most recent year of crime reported in this dataset (2017).
+### Features
+The application successfully computes crime rates for distinct districts and dates, identifying vulnerable areas to specific crime types. Key features include:
+- Hash Table and B+Tree for efficient data management.
+- TKinter-based user interface for interaction with data structures.
+- Data search capability based on date and crime type.
+- Performance tracking for search and sorting operations.
 
-#### Tools
+### Data Source
+- [Chicago Crime Dataset on Kaggle](https://www.kaggle.com/datasets/chicago/chicago-crime/data)
+
+#### Data Description
+The dataset includes reported Chicago crimes from 2001 up to the current date minus the last seven days. It originates from the CLEAR system of the Chicago Police Department. Data presented at the block level maintains victim privacy. The records contain preliminary data subject to revision and should not be used for long-term analysis. Our focus is on the year 2017.
+
+### Tools
 - Python
 - GitHub
 - Kaggle
+- Google BigQueryAPI
+- TKinter for UI development
 
-#### Visuals
-Users will have the following options:
-1. **Search by crime type**
-   - Enter crime type
-   - Options:
-     - Sort by monthly totals
-     - Sort by district totals
-     - Show top 10 dates
-2. **Search by month**
-   - Enter month
-   - Options:
-     - Sort by crime type totals
-     - Sort district totals
-     - Show top 10 dates
-3. **Search by specific date**
-   - Enter specific date
-   - Options:
-     - Sort by crime type totals
-     - Sort by district totals
-     - Show top 10 dates
-4. **Search by district number**
-   - Enter district number
-   - Options:
-     - Sort by crime type totals
-     - Sort by monthly totals
-     - Show top 10 dates
+### Algorithms Implemented
+Our approach integrates advanced data structures, a Hash Table, and a B+ Tree, with TKinter for the user interface. This combination ensures rapid access to and analysis of crime data.
 
-#### Strategy
-We plan on potentially using a hash table and a B+ tree, since the hash table may allow us to map the values for each individual crime to other associated characteristics (date, district, crime type) and the B+ tree will allow us to store items based on their values.
+### Distribution of Responsibilities
+- **Austin Markus**: Implementation of the Hash Table.
+- **Steele Elliott**: Development of the B+ Tree structure.
+- **Nadzumie Flores**: Creation of the TKinter-based user interface.
+Each member provided interdisciplinary support throughout the project.
 
-#### Distribution of Responsibility and Roles
-- **Austin Markus**: Developing the hash table implementation.
-- **Steele Elliott**: Developing the B+ tree implementation.
-- **Nadzumie Flores**: Developing the user interface and analysis documentation.
-  
-Note: Most of our roles will be cross-disciplinary, assisting each other to complete all the necessary tasks as a unit.
+## Analysis
+_[Analysis section to be added]_
+
+## Reflection
+_[Reflection section to be added]_
