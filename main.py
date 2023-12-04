@@ -57,7 +57,7 @@ class CrimeDataApp:
 
     def fetch_and_process_data(self):
         data = fetch_data()
-
+        #timer
         # Start timing for hash table insertion
         start_time_ht = time.perf_counter_ns()
         for index, row in data.iterrows():
