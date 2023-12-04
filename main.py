@@ -73,7 +73,7 @@ class CrimeDataApp:
             self.b_tree.insert(key.lower(), row.to_dict())
         end_time_bt = time.perf_counter_ns()
         duration_bt = end_time_bt - start_time_bt
-
+        #yeah bruh
         # Print the duration for each data structure
         print(f"Hash Table insertion time: {duration_ht} ns")
         print(f"B-Tree insertion time: {duration_bt} ns")
