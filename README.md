@@ -1,4 +1,4 @@
-# Group 94 - Final Project Repository
+# Group 94 - Chicago Crime Search Analysis
 
 ## Team Members
 - Austin Markus
