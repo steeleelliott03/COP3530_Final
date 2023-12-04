@@ -83,24 +83,24 @@ class CrimeDataApp:
         data = fetch_data()
         #timer
         # Start timing for hash table insertion
-        start_time_ht = time.perf_counter_ns()
+        start_time_ht = time.perf_counter()
         for index, row in data.iterrows():
             key = row['primary_type']  # Using 'primary_type' as a key
             self.hash_table.insert(key.lower(), row.to_dict())
-        end_time_ht = time.perf_counter_ns()
-        duration_ht = end_time_ht - start_time_ht
+        end_time_ht = time.perf_counter()
+        duration_ht = round(end_time_ht - start_time_ht, 10)
 
         # Start timing for B-tree insertion
-        start_time_bt = time.perf_counter_ns()
+        start_time_bt = time.perf_counter()
         for index, row in data.iterrows():
             key = row['primary_type']  # Using 'primary_type' as a key
             self.b_tree.insert(key.lower(), row.to_dict())
-        end_time_bt = time.perf_counter_ns()
-        duration_bt = end_time_bt - start_time_bt
+        end_time_bt = time.perf_counter()
+        duration_bt = round(end_time_bt - start_time_bt,10)
         #yeah bruh
         # Print the duration for each data structure
-        print(f"Hash Table insertion time: {duration_ht} ns")
-        print(f"B-Tree insertion time: {duration_bt} ns\n")
+        print(f"Hash Table insertion time: {duration_ht:.8f} seconds")  # Format to 10 decimal points
+        print(f"B-Tree insertion time: {duration_bt:.8f} seconds\n") 
 
 
 
@@ -147,17 +147,17 @@ class CrimeDataApp:
                 messagebox.showerror("Invalid Date", "Enter the date in YYYY-MM-DD format or leave blank")
                 return
 
-        start_time_ns = time.perf_counter_ns()
+        start_time_ns = time.perf_counter()
         results = []
         for bucket in self.hash_table.table:
             for key, record in bucket:
                 record_date = pd.to_datetime(record['date']).date() if 'date' in record else None
                 if record['primary_type'].lower() == crime_type.lower() and (not selected_date_obj or record_date == selected_date_obj):
                     results.append(record)
-        end_time_ns = time.perf_counter_ns()
-        search_duration_ns = end_time_ns - start_time_ns
+        end_time_ns = time.perf_counter()
+        search_duration_ns = round(end_time_ns - start_time_ns, 10)
 
-        print(f"Hash table search time: {search_duration_ns} ns")
+        print(f"Hash table search time: {search_duration_ns:.8f} s")
         print(f"Number of results found: {len(results)}\n")
 
         if results:
@@ -177,17 +177,17 @@ class CrimeDataApp:
                 messagebox.showerror("Invalid Date", "Enter the date in YYYY-MM-DD format or leave blank")
                 return
 
-        start_time_ns = time.perf_counter_ns()
+        start_time_ns = time.perf_counter()
         results = []
         all_results = self.b_tree.search(crime_type.lower())  # Assuming this returns a list of records
         for record in all_results:
             record_date = pd.to_datetime(record['date']).date() if 'date' in record else None
             if not selected_date_obj or record_date == selected_date_obj:
                 results.append(record)
-        end_time_ns = time.perf_counter_ns()
-        search_duration_ns = end_time_ns - start_time_ns
+        end_time_ns = time.perf_counter()
+        search_duration_ns = round(end_time_ns - start_time_ns,10)
 
-        print(f"B-tree search time: {search_duration_ns} ns")
+        print(f"B-tree search time: {search_duration_ns:.8f} s")
         print(f"Number of results found: {len(results)}\n")
 
         if results:
@@ -232,7 +232,7 @@ class CrimeDataApp:
         scrollbar.pack(side='right', fill='y')
     
     def sort_column(self, tree, col):
-        start_time = time.perf_counter_ns()  # Start timing in nanoseconds
+        start_time = time.perf_counter()  # Start timing in nanoseconds
 
         reverse = self.sort_order.get(col, False)
         data_list = [(tree.set(k, col), k) for k in tree.get_children('')]
@@ -259,9 +259,9 @@ class CrimeDataApp:
         # Reverse the sort order for the next time
         self.sort_order[col] = not reverse
 
-        end_time = time.perf_counter_ns()  # End timing in nanoseconds
-        time_diff_ns = end_time - start_time
-        print(f"Sorting time for column '{col}': {time_diff_ns} nanoseconds\n")  # Displaying the time taken in nanoseconds
+        end_time = time.perf_counter()  # End timing in nanoseconds
+        time_diff_ns = round(end_time - start_time,10)
+        print(f"Sorting time for column '{col}': {time_diff_ns:.8f} seconds\n")  # Displaying the time taken in nanoseconds
 
 
 
