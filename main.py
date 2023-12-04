@@ -57,10 +57,27 @@ class CrimeDataApp:
 
     def fetch_and_process_data(self):
         data = fetch_data()
+
+        # Start timing for hash table insertion
+        start_time_ht = time.perf_counter_ns()
         for index, row in data.iterrows():
-            key = row['primary_type']  # Using 'district' as a key
+            key = row['primary_type']  # Using 'primary_type' as a key
             self.hash_table.insert(key.lower(), row.to_dict())
+        end_time_ht = time.perf_counter_ns()
+        duration_ht = end_time_ht - start_time_ht
+
+        # Start timing for B-tree insertion
+        start_time_bt = time.perf_counter_ns()
+        for index, row in data.iterrows():
+            key = row['primary_type']  # Using 'primary_type' as a key
             self.b_tree.insert(key.lower(), row.to_dict())
+        end_time_bt = time.perf_counter_ns()
+        duration_bt = end_time_bt - start_time_bt
+
+        # Print the duration for each data structure
+        print(f"Hash Table insertion time: {duration_ht} ns")
+        print(f"B-Tree insertion time: {duration_bt} ns")
+
 
 
 
