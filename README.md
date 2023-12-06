@@ -7,7 +7,7 @@
 
 ## Links
 - [GitHub Repository](https://github.com/steeleelliott03/COP3530_Final)
-- Link to Video: _[Video link to be added]_
+- Link to Video: [Crime Search Demo](https://youtu.be/t-2wSQbUNTk)
 
 ## Final Project Proposal: Keep Your Eye on the Crime
 
